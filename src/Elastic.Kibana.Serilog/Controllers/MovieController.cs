@@ -52,8 +52,8 @@ namespace Elastic.Kibana.Serilog.Controllers
                 _logger.LogInformation($"Movie {id}" + "not Found");
                 return NotFound();
             }
-            _logger.LogInformation("Movie, {id} , {name}", id , movie.Title );
-            _logger.LogInformation("Api GetMovies with id {id} end", id);
+            _logger.LogInformation("Movie, {id} " + " {name}", id , movie.Title );
+            _logger.LogInformation("Api GetMovies with id: {id} end", id);
             return movie;
         }
 
@@ -63,7 +63,7 @@ namespace Elastic.Kibana.Serilog.Controllers
         {
             _dbContext.Movies.Add(movie);
             await _dbContext.SaveChangesAsync();
-
+            _logger.LogInformation("Saved Movie with id : {id}", movie.Id);
             return CreatedAtAction(nameof(GetMovie), new { id = movie.Id }, movie);
         }
 
@@ -71,6 +71,7 @@ namespace Elastic.Kibana.Serilog.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutMovie(int id, Movie movie)
         {
+            _logger.LogInformation("Updating Content of Movie with id: {id}", id);
             if (id != movie.Id)
             {
                 return BadRequest();
@@ -93,7 +94,7 @@ namespace Elastic.Kibana.Serilog.Controllers
                     throw;
                 }
             }
-
+            _logger.LogInformation("Updated Content of Movie with id: {id}", id);
             return NoContent();
         }
 
@@ -114,12 +115,13 @@ namespace Elastic.Kibana.Serilog.Controllers
 
             _dbContext.Movies.Remove(movie);
             await _dbContext.SaveChangesAsync();
-
+            _logger.LogInformation("Deleted Movie with id {id}", id);
             return NoContent();
         }
 
         private bool MovieExists(long id)
         {
+            _logger.LogInformation("Checking if Movie is Present with id {id}", id);
             return (_dbContext.Movies?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
