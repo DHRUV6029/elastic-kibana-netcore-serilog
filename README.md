@@ -1,4 +1,4 @@
-# Logging with ElasticSearch 7.9.2, Kibana, .NET Core 3.1 and Serilog
+# Logging with ElasticSearch 7.9.2, Kibana, .NET Core and Serilog
 
 ## Steps To Run the Solution:
 * Spin up Elasticsearch and Kibana in Docker
