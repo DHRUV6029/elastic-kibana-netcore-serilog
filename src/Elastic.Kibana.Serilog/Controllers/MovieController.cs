@@ -1,6 +1,7 @@
 ﻿using Elastic.Kibana.Serilog.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,10 +13,12 @@ namespace Elastic.Kibana.Serilog.Controllers
     public class MovieController : ControllerBase
     {
         private readonly MovieContext _dbContext;
+        private readonly ILogger<MovieController> _logger;
 
-        public MovieController(MovieContext dbContext)
+        public MovieController(MovieContext dbContext  , ILogger<MovieController> logger)
         {
             _dbContext = dbContext;
+            _logger = logger;
         }
 
 
@@ -23,10 +26,12 @@ namespace Elastic.Kibana.Serilog.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Movie>>> GetMovies()
         {
+            _logger.LogInformation("Api GetMovies called");
             if (_dbContext.Movies == null)
             {
                 return NotFound();
             }
+            _logger.LogInformation("Api GetMovies end");
             return await _dbContext.Movies.ToListAsync();
         }
 
@@ -34,17 +39,21 @@ namespace Elastic.Kibana.Serilog.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Movie>> GetMovie(int id)
         {
+            _logger.LogInformation("Api GetMovies with id {id} called", id);
             if (_dbContext.Movies == null)
             {
+                _logger.LogInformation("No Movie in the Table");
                 return NotFound();
             }
             var movie = await _dbContext.Movies.FindAsync(id);
 
             if (movie == null)
             {
+                _logger.LogInformation($"Movie {id}" + "not Found");
                 return NotFound();
             }
-
+            _logger.LogInformation("Movie, {id} , {name}", id , movie.Title );
+            _logger.LogInformation("Api GetMovies with id {id} end", id);
             return movie;
         }
 
